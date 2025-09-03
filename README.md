@@ -1,62 +1,36 @@
 # Object-Detection-using-ResNet-18
 
-The project explores model compression techniques, including **quantization** (Post-Training Quantization and Quantization-Aware Training), to reduce model size and improve inference speed while maintaining high accuracy.
-
+This project involves building and training a ResNet-18 model from scratch for the CIFAR-10 dataset, with a focus on robust training strategies and performance evaluation.
 ## Project Overview & Goals
 
 The primary objectives of this study were to:
-- Establish a robust full-precision (FP32) baseline for image classification on CIFAR-10.
-- Implement and evaluate model compression techniques:
-  - **Quantization**: Reducing precision of weights and activations (e.g., from 32-bit floating-point to 8-bit integers).
-      - **Post Training Quantization**
-      - **Quantization Aware Training**
-- Compare optimized models against the baseline across key metrics: **accuracy**, **model size**, and **inference time**.
-- Provide clear visualizations to illustrate the impact and trade-offs of each optimization strategy.
+- Implement a ResNet-18 architecture for CIFAR-10 image classification.
+- Apply advanced training techniques to improve generalization:
+  - Data Augmentation: RandomHorizontalFlip, RandomCrop (32×32 with 4-pixel padding), ColorJitter, and RandomRotation (15°).
+  - Regularization & Optimization: Label smoothing, cosine annealing learning rate scheduler.
+  - Mixed-Precision Training (AMP) to accelerate training on CUDA-enabled devices.
+- Evaluate model performance using accuracy, confusion matrix, and prediction visualizations.
 
 ## Features Implemented & Work Done
 
-#### Quantization Techniques
 1. **Full Precision (FP32) Model Training**:
-   - Trained a ResNet18 model from scratch on CIFAR-10.
-   - Applied advanced data augmentation: `RandomHorizontalFlip`, `RandomCrop` (32x32 with 4-pixel padding), `ColorJitter` (brightness, contrast, saturation, hue), and `RandomRotation` (15 degrees).
+   - Implemented and trained ResNet-18 from scratch on CIFAR-10.
+   - Used advanced data augmentation to prevent overfitting and enhance model robustness.
+   - Applied label smoothing and cosine annealing to improve generalization.
    - Used mixed-precision training (AMP) on CUDA-enabled devices for faster training.
-   - Saved the best-performing model as `best_float_model.pth`.
-   - **Outputs**: Training/validation loss and accuracy curves, confusion matrix, and sample prediction visualizations.
+   - **Outputs**: Training/validation accuracy and loss curves, Confusion matrix, Sample prediction visualizations.
 
-2. **Post-Training Quantization (PTQ)**:
-   - Applied static 8-bit integer quantization to `best_float_model.pth`.
-   - Fused modules (Conv-BN-ReLU) for optimized quantized operations.
-   - Calibrated activation ranges using a subset of the training dataset (8192 samples).
-   - Saved the quantized model as `final_ptq_quantized_model.pth`.
-   - **Outputs**: Confusion matrix and sample prediction visualizations.
-
-3. **Quantization-Aware Training (QAT)**:
-   - Fine-tuned `best_float_model.pth` with simulated quantization to adapt weights to quantization noise.
-   - Saved the best QAT model as `best_qat_model.pth`.
-   - **Outputs**: Confusion matrix and sample prediction visualizations.
 
 #### Evaluation & Visualizations
-- **Metrics**: Compared **Test Accuracy (%)**, **Model Size (MB)**, and **Inference Time (ms/sample)** for FP32, PTQ, and QAT models.
 - **Visualizations**:
-  - **Accuracy Comparison**: Bar chart comparing FP32, PTQ, and QAT model accuracies.
-  - **Model Size Comparison**: Bar chart showing disk size of model variants.
-  - **Inference Time Comparison**: Bar chart displaying average inference time per sample.
-
-
+  - **Confusion Matrix**: The confusion matrix shows the per-class performance with the highest accuracy classes are Car (973/1000), Ship (972/1000) and Truck(959/1000).
+  - **Sample predictions**: Displays a set of test images from the CIFAR-10 dataset along with their true labels and the model’s predictions.
 
 ## Key Results and Analysis
 
-### Quantization Results
+### Results
 | Model Type | Accuracy (%) | Model Size (MB) | Inference Time (ms/sample) |
 |------------|--------------|-----------------|---------------------------|
 | FP32       | 94.02        | 42.70           | 27.67                     |
-| PTQ        | 94.04        | 10.79           | 9.53                      |
-| QAT        | 93.98        | 10.78           | 8.80                      |
 
-### Observations
-- **Model Size Reduction**: PTQ and QAT achieved a ~75% reduction in model size (42.70 MB to 10.79 MB).
-- **Inference Speedup**: Quantized models reduced inference time by ~65% (27.67 ms to ~9 ms).
-- **Accuracy Retention (PTQ)**: PTQ maintained accuracy (94.04% vs 94.02%), indicating robust calibration.
-- **Accuracy Retention (QAT)**: QAT achieved 93.98% accuracy, with a minor ~0.3% drop, confirming effective adaptation to quantization.
-
-These results highlight the efficacy of quantization for resource-constrained environments.
+This project demonstrates that a ResNet-18 model built from scratch can achieve state-of-the-art performance (~94% accuracy) on CIFAR-10 when combined with strong augmentation, regularization, and efficient training techniques.
